@@ -19,12 +19,15 @@ public class Todo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     @Column(name = "user_reference")
     private String user;
+
     private String description;
+
     @JsonFormat(pattern = "yyyy-MM-dd")
     @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate date;
-    private Boolean done;
 
+    private Boolean done;
 }

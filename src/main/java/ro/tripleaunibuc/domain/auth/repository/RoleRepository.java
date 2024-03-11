@@ -7,4 +7,6 @@ import java.util.List;
 public interface RoleRepository {
 
     List<Role> findByUsername(String username);
+
+    void save(Role role);
 }

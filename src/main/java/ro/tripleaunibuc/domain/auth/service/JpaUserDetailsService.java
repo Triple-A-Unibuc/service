@@ -10,6 +10,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ro.tripleaunibuc.domain.auth.model.Role;
 import ro.tripleaunibuc.domain.auth.model.User;
+import ro.tripleaunibuc.domain.auth.repository.RoleRepository;
+import ro.tripleaunibuc.domain.auth.repository.UserRepository;
 import ro.tripleaunibuc.infrastructure.auth.repository.SpringDataRoleRepository;
 import ro.tripleaunibuc.infrastructure.auth.repository.SpringDataUserRepository;
 
@@ -21,13 +23,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class JpaUserDetailsService implements UserDetailsService {
 
-    private final SpringDataUserRepository userRepository;
-    private final SpringDataRoleRepository springDataRoleRepository;
+    private final UserRepository userRepository;
+    private final RoleRepository springDataRoleRepository;
 
     @Cacheable("userDetails")
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
         User user = userRepository.findByUsername(username)
                                   .orElseThrow(() -> new UsernameNotFoundException(username));
 
@@ -40,6 +41,6 @@ public class JpaUserDetailsService implements UserDetailsService {
     private static Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles) {
         return roles.stream()
                     .map(role -> new SimpleGrantedAuthority(role.getRole()))
-                    .collect(Collectors.toList());
+                    .toList();
     }
 }

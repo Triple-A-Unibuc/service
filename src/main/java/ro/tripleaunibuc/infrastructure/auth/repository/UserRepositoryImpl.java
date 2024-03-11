@@ -19,4 +19,9 @@ public class UserRepositoryImpl implements UserRepository {
     public Optional<User> findByUsername(String username) {
         return springDataUserRepository.findByUsername(username);
     }
+
+    @Override
+    public void save(User user) {
+        springDataUserRepository.save(user);
+    }
 }

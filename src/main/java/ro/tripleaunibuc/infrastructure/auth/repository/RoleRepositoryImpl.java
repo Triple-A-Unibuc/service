@@ -19,4 +19,9 @@ public class RoleRepositoryImpl implements RoleRepository {
     public List<Role> findByUsername(String username) {
         return springDataRoleRepository.findByUsername(username);
     }
+
+    @Override
+    public void save(Role role) {
+        springDataRoleRepository.save(role);
+    }
 }

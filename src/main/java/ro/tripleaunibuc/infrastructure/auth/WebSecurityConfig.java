@@ -33,6 +33,21 @@ public class WebSecurityConfig {
     private final JpaUserDetailsService jpaUserDetailsService;
     private final JwtTokenAuthorizationOncePerRequestFilter jwtAuthenticationTokenFilter;
 
+    private static final String[] AUTH_WHITELIST = {
+            // -- Swagger UI v2
+            "/v2/api-docs",
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/configuration/ui",
+            "/configuration/security",
+            "/swagger-ui.html",
+            "/webjars/**",
+            // -- Swagger UI v3 (OpenAPI)
+            "/v3/api-docs/**",
+            "/swagger-ui/**"
+            // other public endpoints of your API may be appended to this array
+    };
+
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
@@ -57,9 +72,9 @@ public class WebSecurityConfig {
                                                    HandlerMappingIntrospector introspector) throws Exception {
         MvcRequestMatcher.Builder mvcMatcherBuilder = new MvcRequestMatcher.Builder(introspector);
 
-        httpSecurity.csrf(csrfConfigurer ->
-                csrfConfigurer.ignoringRequestMatchers(mvcMatcherBuilder.pattern(SECURED_API_URL),
-                        PathRequest.toH2Console()));
+//        httpSecurity.csrf(csrfConfigurer ->
+//                csrfConfigurer.ignoringRequestMatchers(mvcMatcherBuilder.pattern(SECURED_API_URL),
+//                        PathRequest.toH2Console()));
 
         httpSecurity.headers(headersConfigurer ->
                 headersConfigurer.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin).cacheControl());
@@ -68,11 +83,12 @@ public class WebSecurityConfig {
 
         httpSecurity.authorizeHttpRequests(auth ->
                 auth
-                        .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.OPTIONS, SECURED_API_URL)).permitAll()
-                        .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.POST, AUTH_URL)).permitAll()
-                        .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.POST, REGISTER_URL)).permitAll()
-                        .requestMatchers(mvcMatcherBuilder.pattern(SECURED_API_URL)).hasAnyRole("ADMIN", "USER")
-                        .requestMatchers(PathRequest.toH2Console()).authenticated()
+                        .requestMatchers(HttpMethod.OPTIONS, SECURED_API_URL).permitAll()
+                        .requestMatchers(HttpMethod.POST, AUTH_URL).permitAll()
+                        .requestMatchers(HttpMethod.POST, REGISTER_URL).permitAll()
+                        .requestMatchers(AUTH_WHITELIST).permitAll()
+                        .requestMatchers(SECURED_API_URL).hasAnyRole("ADMIN", "USER")
+                        //.requestMatchers(PathRequest.toH2Console()).authenticated()
                         .anyRequest().authenticated()
         ).addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
 

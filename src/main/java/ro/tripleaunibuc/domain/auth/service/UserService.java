@@ -6,15 +6,15 @@ import org.springframework.stereotype.Service;
 import ro.tripleaunibuc.domain.auth.model.Role;
 import ro.tripleaunibuc.domain.auth.model.User;
 import ro.tripleaunibuc.application.auth.dto.request.RegistrationModel;
-import ro.tripleaunibuc.infrastructure.auth.repository.SpringDataRoleRepository;
-import ro.tripleaunibuc.infrastructure.auth.repository.SpringDataUserRepository;
+import ro.tripleaunibuc.domain.auth.repository.RoleRepository;
+import ro.tripleaunibuc.domain.auth.repository.UserRepository;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
-    private final SpringDataUserRepository userRepository;
-    private final SpringDataRoleRepository springDataRoleRepository;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
     public void registerUser(RegistrationModel registrationModel) {
@@ -34,6 +34,6 @@ public class UserService {
         Role role = new Role();
         role.setUsername(registrationModel.getUsername());
         role.setRole("ROLE_USER");
-        springDataRoleRepository.save(role);
+        roleRepository.save(role);
     }
 }

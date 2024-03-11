@@ -6,7 +6,7 @@ import org.springframework.boot.testcontainers.service.connection.ServiceConnect
 import org.springframework.context.annotation.Bean;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.utility.DockerImageName;
-import ro.tripleaunibuc.infrastructure.bootstrap.TreeAProjectApplication;
+import ro.tripleaunibuc.infrastructure.bootstrap.TripleAProject;
 
 @TestConfiguration(proxyBeanMethods = false)
 public class TestAuthApplication {
@@ -18,7 +18,7 @@ public class TestAuthApplication {
     }
 
     public static void main(String[] args) {
-        SpringApplication.from(TreeAProjectApplication::main).with(TestAuthApplication.class).run(args);
+        SpringApplication.from(TripleAProject::main).with(TestAuthApplication.class).run(args);
     }
 
 }

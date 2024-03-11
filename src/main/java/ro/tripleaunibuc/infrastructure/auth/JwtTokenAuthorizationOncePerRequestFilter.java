@@ -33,6 +33,16 @@ public class JwtTokenAuthorizationOncePerRequestFilter extends OncePerRequestFil
 			throws ServletException, IOException {
 		log.debug("Authentication Request For '{}'", request.getRequestURL());
 
+		if (request.getServletPath().contains("/api/v1/auth")) {
+			chain.doFilter(request, response);
+			return;
+		}
+
+		if (request.getServletPath().contains("/v3/api-docs") || request.getServletPath().contains("/swagger-ui")) {
+			chain.doFilter(request, response);
+			return;
+		}
+
 		final String requestTokenHeader = request.getHeader(AUTH_HEADER);
 
 		String username = null;

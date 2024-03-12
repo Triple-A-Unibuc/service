@@ -26,12 +26,12 @@ application:
       refresh-token:
         expiration: 3600000 # 1 hour
 server:
-  port: 8088
+  port: 8080
 
 service-app:
   openapi:
-    dev-url: http://localhost:8088
-    prod-url: https://localhost:8080
+    dev-url: http://localhost:8080
+    prod-url: https://localhost:8088
 
 
 

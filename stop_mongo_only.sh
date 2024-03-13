@@ -1,4 +1,4 @@
 #!/bin/bash
 set -x
 
-docker compose --profile mongo down
+docker compose --profile postgres down

@@ -27,13 +27,17 @@ application:
         expiration: 3600000 # 1 hour
 server:
   port: 8080
+  address: 0.0.0.0
+  # ssl:
+  #   key-store: keystore.p12
+  #   key-store-password: triplea
+  #   keyStoreType: PKCS12
+  #   keyAlias: tomcat
 
 service-app:
   openapi:
     dev-url: http://localhost:8080
     prod-url: https://localhost:8088
-
-
 
 logging:
   level:

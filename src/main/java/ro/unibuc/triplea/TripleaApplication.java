@@ -5,7 +5,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-//@EnableJpaRepositories(basePackages = "ro.unibuc.triplea.infrastructure.auth.repository")
 public class TripleaApplication {
 
 	public static void main(String[] args) {

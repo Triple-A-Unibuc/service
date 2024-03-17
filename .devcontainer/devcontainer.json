@@ -6,9 +6,6 @@
     "DISABLE_JAVA_BUILD": "true"
   },
   "features": {
-    // "ghcr.io/devcontainers/features/java:1": {
-    //   "version": "21"
-    // },
     "ghcr.io/devcontainers/features/docker-in-docker:2": {}
   },
   "customizations": {

@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ro.unibuc.triplea.domain.auth.model.entity.Game;
 import ro.unibuc.triplea.domain.auth.service.GameService;
@@ -21,8 +22,8 @@ public class GameController {
     private final GameService gameService;
 
     @GetMapping("/get-all")
-    public ResponseEntity<List<Game>> getAllGames() {
-        List<Game> games = gameService.getAllGames();
+    public ResponseEntity<List<Game>> getAllGames(@RequestParam(required=false, name="count") Optional<Integer> count) {
+        List<Game> games = gameService.getAllGames(count);
         return ResponseEntity.ok(games);
     }
 

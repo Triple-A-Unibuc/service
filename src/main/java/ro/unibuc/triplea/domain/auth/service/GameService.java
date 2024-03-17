@@ -18,9 +18,8 @@ public class GameService {
         this.gameRepository = gameRepository;
     }
 
-    public List<Game> getAllGames() {
-        // TODO add threshold here
-        return gameRepository.findAll();
+    public List<Game> getAllGames(Optional<Integer> count) {
+        return gameRepository.findAll(count);
     }
 
     public Optional<Game> getGameBySteamId(Integer gameSteamId) {

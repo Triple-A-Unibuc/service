@@ -9,7 +9,7 @@ public interface GameRepository {
 
     Optional<Game> findByGameSteamId(Integer gameSteamId);
     Optional<Game> findByGameName(String gameName);
-    List<Game> findAll();
+    List<Game> findAll(Optional<Integer> count);
 
     Game save(Game game);
 }

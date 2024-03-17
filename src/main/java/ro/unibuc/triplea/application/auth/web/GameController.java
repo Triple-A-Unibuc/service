@@ -8,7 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ro.unibuc.triplea.domain.auth.model.entity.Game;
+
+import ro.unibuc.triplea.application.auth.dto.response.GameResponse;
 import ro.unibuc.triplea.domain.auth.service.GameService;
 import java.util.List;
 import java.util.Optional;
@@ -22,15 +23,15 @@ public class GameController {
     private final GameService gameService;
 
     @GetMapping("/get-all")
-    public ResponseEntity<List<Game>> getAllGames(@RequestParam(required=false, name="count") Optional<Integer> count) {
-        List<Game> games = gameService.getAllGames(count);
+    public ResponseEntity<List<GameResponse>> getAllGames(@RequestParam(required=false, name="count") Optional<Integer> count) {
+        List<GameResponse> games = gameService.getAllGames(count);
         return ResponseEntity.ok(games);
     }
 
     @GetMapping("/{identifier}")
     public ResponseEntity<?> getGameByIdentifier(@PathVariable String identifier) {
         
-        Optional<Game> game;
+        Optional<GameResponse> game;
 
         try {
             Integer steamId = Integer.parseInt(identifier);

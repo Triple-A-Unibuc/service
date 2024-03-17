@@ -7,11 +7,11 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import ro.unibuc.triplea.application.auth.dto.response.GameResponse;
 import ro.unibuc.triplea.domain.auth.model.entity.Game;
 import ro.unibuc.triplea.domain.auth.repository.GameRepository;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -32,7 +32,7 @@ public class GameRepositoryImpl implements GameRepository {
     }
 
     @Override
-    public List<Game> findAll(Optional<Integer> count) {
+    public List<GameResponse> findAll(Optional<Integer> count) {
         String apiUrl = "http://api.steampowered.com/ISteamApps/GetAppList/v0002/?key=" + steamApiKey + "&format=json";
         ResponseEntity<JsonNode> responseEntity = restTemplate.getForEntity(apiUrl, JsonNode.class);
 
@@ -40,7 +40,7 @@ public class GameRepositoryImpl implements GameRepository {
 
             JsonNode responseNode = responseEntity.getBody();
 
-            List<Game> games = new ArrayList<>();
+            List<GameResponse> games = new ArrayList<>();
             if (responseNode != null && responseNode.has("applist")) {
                 JsonNode appList = responseNode.get("applist");
                 if (appList.has("apps")) {
@@ -53,12 +53,12 @@ public class GameRepositoryImpl implements GameRepository {
                             break;
                         }
 
-                        Game game = new Game();
-                        game.setGameSteamId(app.get("appid").asInt());
-                        game.setGameName(app.get("name").asText());
-                        games.add(game);
+                        if (app.get("name").asText() != "") {
+                            GameResponse game = GameResponse.builder().gameSteamId(app.get("appid").asInt()).gameName(app.get("name").asText()).build();
+                            games.add(game);
 
-                        counter++;
+                            counter++;
+                        }
                     }
                 }
             }
@@ -76,7 +76,7 @@ public class GameRepositoryImpl implements GameRepository {
     }
 
     @Override
-    public Optional<Game> findByGameSteamId(Integer gameSteamId) {
+    public Optional<GameResponse> findByGameSteamId(Integer gameSteamId) {
         String apiUrl = "http://api.steampowered.com/ISteamApps/GetAppList/v0002/?key=" + steamApiKey + "&format=json";
         ResponseEntity<JsonNode> responseEntity = restTemplate.getForEntity(apiUrl, JsonNode.class);
 
@@ -89,9 +89,7 @@ public class GameRepositoryImpl implements GameRepository {
                     JsonNode apps = appList.get("apps");
                     for (JsonNode app : apps) {
                         if (app.get("appid").asInt() == gameSteamId) {
-                            Game game = new Game();
-                            game.setGameSteamId(app.get("appid").asInt());
-                            game.setGameName(app.get("name").asText());
+                            GameResponse game = GameResponse.builder().gameSteamId(app.get("appid").asInt()).gameName(app.get("name").asText()).build();
                             return Optional.of(game);
                         }
                     }
@@ -105,7 +103,7 @@ public class GameRepositoryImpl implements GameRepository {
     }
 
     @Override
-    public Optional<Game> findByGameName(String gameName) {
+    public Optional<GameResponse> findByGameName(String gameName) {
         String apiUrl = "http://api.steampowered.com/ISteamApps/GetAppList/v0002/?key=" + steamApiKey + "&format=json";
         ResponseEntity<JsonNode> responseEntity = restTemplate.getForEntity(apiUrl, JsonNode.class);
 
@@ -118,9 +116,7 @@ public class GameRepositoryImpl implements GameRepository {
                     JsonNode apps = appList.get("apps");
                     for (JsonNode app : apps) {
                         if (app.get("name").asText().equalsIgnoreCase(gameName)) {
-                            Game game = new Game();
-                            game.setGameSteamId(app.get("appid").asInt());
-                            game.setGameName(app.get("name").asText());
+                            GameResponse game = GameResponse.builder().gameSteamId(app.get("appid").asInt()).gameName(app.get("name").asText()).build();
                             return Optional.of(game);
                         }
                     }

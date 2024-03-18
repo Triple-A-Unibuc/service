@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ro.unibuc.triplea.application.games.steam.dto.response.SteamGameResponse;
-import ro.unibuc.triplea.domain.games.steam.exception.SteamGameNotFoundException;
 import ro.unibuc.triplea.domain.games.steam.service.SteamGameService;
 
 import java.util.List;
@@ -37,7 +36,7 @@ public class SteamGameController {
         if (game.isPresent()) {
             return ResponseEntity.ok(game.get());
         } else {
-            throw new SteamGameNotFoundException("Steam game with identifier " + identifier + " not found");
+            return ResponseEntity.notFound().build();
         }
     }
 

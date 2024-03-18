@@ -2,13 +2,14 @@ package ro.unibuc.triplea.domain.games.steam.service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import ro.unibuc.triplea.application.games.steam.dto.response.SteamGameResponse;
+import ro.unibuc.triplea.domain.games.steam.exception.SteamGameNotFoundException;
 import ro.unibuc.triplea.domain.games.steam.exception.SteamGameValidateException;
 import ro.unibuc.triplea.domain.games.steam.repository.SteamGameRepository;
+import ro.unibuc.triplea.domain.games.steam.utils.IdentifierUtil;
 
 @Service
 @RequiredArgsConstructor
@@ -28,25 +29,27 @@ public class SteamGameService {
         return steamGameRepository.findByGameName(gameName);
     }
 
-    private boolean isNumeric(String str) {
-        return str.matches("\\d+");
-    }
-    
-    private boolean isValidString(String str) {
-        return Pattern.matches("^([^\\\\u4E00-\\\\u9FFF]*?)(?:[\\\\p{L}0-9' .:~\\\\u4E00-\\\\u9FFF].*)?$", str);
-    }
-
     public Optional<SteamGameResponse> getGameByIdentifier(String identifier) {
-        try {
-            if (isNumeric(identifier)) {
-                int steamId = Integer.parseInt(identifier);
-                return getGameBySteamId(steamId);
-            } else if (isValidString(identifier)) {
-                return getGameByName(identifier);
-            } else {
-                throw new SteamGameValidateException("Invalid identifier: " + identifier);
+        if (IdentifierUtil.isNumeric(identifier)) {
+            int steamId = Integer.parseInt(identifier);
+            Optional<SteamGameResponse> game = getGameBySteamId(steamId);
+
+            if (game.isPresent()) {
+                return game;
             }
-        } catch (Exception e) {
+            else {
+                throw new SteamGameNotFoundException("Steam game with identifier " + identifier + " not found");
+            }
+        } else if (IdentifierUtil.isValidString(identifier)) {
+            Optional<SteamGameResponse> game = getGameByName(identifier);
+
+            if (game.isPresent()) {
+                return game;
+            }
+            else {
+                throw new SteamGameNotFoundException("Steam game with identifier " + identifier + " not found");
+            }
+        } else {
             throw new SteamGameValidateException("Invalid identifier: " + identifier);
         }
     }

@@ -1,4 +1,4 @@
-package ro.unibuc.triplea.application.auth.dto.response;
+package ro.unibuc.triplea.application.games.steam.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Builder
-public class GameResponse {
-    private Integer gameSteamId;
+public class SteamGameResponse {
+    private int gameSteamId;
     private String gameName;
 }

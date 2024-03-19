@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 public class SteamGameStandardResponse {
     private String code;
     private String message;
-    private Object data;
+    private String data;
 }

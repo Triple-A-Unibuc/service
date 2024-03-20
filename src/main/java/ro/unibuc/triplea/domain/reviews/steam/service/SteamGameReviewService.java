@@ -70,6 +70,7 @@ public class SteamGameReviewService {
                 .gameName(steamGameResponse.get().getGameName())
                 .reviewContent(steamGameReviewRequest.getReviewContent())
                 .userName(username)
+                .createdBy(username)
                 .build();
     }
 

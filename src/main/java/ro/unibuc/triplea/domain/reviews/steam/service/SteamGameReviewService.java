@@ -1,6 +1,7 @@
 package ro.unibuc.triplea.domain.reviews.steam.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import ro.unibuc.triplea.application.games.steam.dto.response.SteamGameResponse;
 import ro.unibuc.triplea.application.reviews.steam.dto.request.SteamGameReviewRequest;
@@ -50,23 +51,25 @@ public class SteamGameReviewService {
             throw new SteamGameNotFoundException("Invalid identifier: " + identifier);
         }
     }
-    public Optional<SteamGameReviewResponse> addReview(SteamGameReviewRequest game) {
-        SteamGameReview steamGameReview = convertToSteamGameReview(game);
+    public Optional<SteamGameReviewResponse> addReview(SteamGameReviewRequest game, UserDetails userDetails) {
+        SteamGameReview steamGameReview = convertToSteamGameReview(game, userDetails.getUsername());
         return steamGameReviewRepository.save(steamGameReview);
     }
     public Optional<List<SteamGameReviewResponse>> getReviewsByUser(String username) {
         return steamGameReviewRepository.findAllByUserName(username);
     }
 
-    private SteamGameReview convertToSteamGameReview(SteamGameReviewRequest steamGameReviewRequest) {
+    private SteamGameReview convertToSteamGameReview(SteamGameReviewRequest steamGameReviewRequest, String username) {
         Optional<SteamGameResponse> steamGameResponse = steamGameService.getGameBySteamId(steamGameReviewRequest.getGameSteamId());
         if(steamGameResponse.isEmpty()) {
             throw new SteamGameNotFoundException("Steam game with identifier " + steamGameReviewRequest.getGameSteamId() + " not found");
         }
+
         return SteamGameReview.builder()
                 .gameSteamId(steamGameReviewRequest.getGameSteamId())
                 .gameName(steamGameResponse.get().getGameName())
                 .reviewContent(steamGameReviewRequest.getReviewContent())
+                .userName(username)
                 .build();
     }
 

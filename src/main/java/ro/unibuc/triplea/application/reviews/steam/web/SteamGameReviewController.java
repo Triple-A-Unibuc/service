@@ -3,6 +3,8 @@ package ro.unibuc.triplea.application.reviews.steam.web;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import ro.unibuc.triplea.application.reviews.steam.dto.request.SteamGameReviewRequest;
 import ro.unibuc.triplea.application.reviews.steam.dto.response.SteamGameReviewResponse;
@@ -40,8 +42,8 @@ public class SteamGameReviewController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addReview(@RequestBody SteamGameReviewRequest review) {
-        Optional<SteamGameReviewResponse> addedReview = steamGameReviewService.addReview(review);
+    public ResponseEntity<?> addReview(@RequestBody SteamGameReviewRequest review, @AuthenticationPrincipal UserDetails userDetails) {
+        Optional<SteamGameReviewResponse> addedReview = steamGameReviewService.addReview(review, userDetails);
         if (addedReview.isPresent()) {
             return ResponseEntity.ok(addedReview.get());
         } else {

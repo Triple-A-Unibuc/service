@@ -13,13 +13,6 @@
         },
         {
             "type": "java",
-            "name": "Service",
-            "request": "launch",
-            "mainClass": "ro.unibuc.hello.HelloApplication",
-            "projectName": "hello"
-        }
-        {
-            "type": "java",
             "name": "Docker Debug",
             "request": "attach",
             "hostName": "localhost",

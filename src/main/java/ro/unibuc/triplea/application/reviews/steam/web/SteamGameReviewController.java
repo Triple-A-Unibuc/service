@@ -31,9 +31,9 @@ public class SteamGameReviewController {
         }
     }
 
-    @GetMapping("/user-id/{userId}")
-    public ResponseEntity<?> getReviewsByUserId(@PathVariable String userId) {
-        Optional<List<SteamGameReviewResponse>> reviews = steamGameReviewService.getReviewsByUser(userId);
+    @GetMapping("/user-name/{userName}")
+    public ResponseEntity<?> getReviewsByUserId(@PathVariable String userName) {
+        Optional<List<SteamGameReviewResponse>> reviews = steamGameReviewService.getReviewsByUserName(userName);
         if (reviews.isPresent()) {
             return ResponseEntity.ok(reviews.get());
         } else {

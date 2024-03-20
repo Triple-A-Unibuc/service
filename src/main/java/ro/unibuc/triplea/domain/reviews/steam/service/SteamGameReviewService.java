@@ -55,7 +55,7 @@ public class SteamGameReviewService {
         SteamGameReview steamGameReview = convertToSteamGameReview(game, userDetails.getUsername());
         return steamGameReviewRepository.save(steamGameReview);
     }
-    public Optional<List<SteamGameReviewResponse>> getReviewsByUser(String username) {
+    public Optional<List<SteamGameReviewResponse>> getReviewsByUserName(String username) {
         return steamGameReviewRepository.findAllByUserName(username);
     }
 

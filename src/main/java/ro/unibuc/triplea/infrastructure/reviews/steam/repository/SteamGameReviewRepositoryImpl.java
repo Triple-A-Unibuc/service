@@ -39,6 +39,7 @@ public class SteamGameReviewRepositoryImpl implements SteamGameReviewRepository 
                 .map(steamGameReview -> SteamGameReviewResponse.builder()
                         .gameSteamId(steamGameReview.getGameSteamId())
                         .gameName(steamGameReview.getGameName())
+                        .userName(steamGameReview.getUserName())
                         .reviewContent(steamGameReview.getReviewContent())
                         .build())
                 .collect(Collectors.toList()));
@@ -56,6 +57,7 @@ public class SteamGameReviewRepositoryImpl implements SteamGameReviewRepository 
                 .map(steamGameReview -> SteamGameReviewResponse.builder()
                         .gameSteamId(steamGameReview.getGameSteamId())
                         .gameName(steamGameReview.getGameName())
+                        .userName(steamGameReview.getUserName())
                         .reviewContent(steamGameReview.getReviewContent())
                         .build())
                 .collect(Collectors.toList()));
@@ -73,6 +75,7 @@ public class SteamGameReviewRepositoryImpl implements SteamGameReviewRepository 
                 .map(steamGameReview -> SteamGameReviewResponse.builder()
                         .gameSteamId(steamGameReview.getGameSteamId())
                         .gameName(steamGameReview.getGameName())
+                        .userName(steamGameReview.getUserName())
                         .reviewContent(steamGameReview.getReviewContent())
                         .build())
                 .collect(Collectors.toList()));
@@ -89,6 +92,7 @@ public class SteamGameReviewRepositoryImpl implements SteamGameReviewRepository 
         return Optional.of(SteamGameReviewResponse.builder()
                 .gameSteamId(steamGameReview.getGameSteamId())
                 .gameName(steamGameReview.getGameName())
+                .userName(steamGameReview.getUserName())
                 .reviewContent(steamGameReview.getReviewContent())
                 .build());
     }

@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import ro.unibuc.triplea.application.favorites.steam.dto.request.SteamGameFavoriteRequest;
 import ro.unibuc.triplea.application.favorites.steam.dto.response.SteamGameFavoriteResponse;
 import ro.unibuc.triplea.application.games.steam.dto.response.SteamGameResponse;
+import ro.unibuc.triplea.domain.favorites.steam.exception.SteamGameFavoriteDuplicateException;
 import ro.unibuc.triplea.domain.favorites.steam.model.entity.SteamGameFavorite;
 import ro.unibuc.triplea.domain.favorites.steam.repository.SteamGameFavoriteRepository;
 import ro.unibuc.triplea.domain.games.steam.exception.SteamGameNotFoundException;
@@ -22,11 +23,12 @@ public class SteamGameFavoriteService {
     private final SteamGameFavoriteRepository steamGameFavoriteRepository;
     private final SteamGameService steamGameService;
     public Optional<SteamGameFavoriteResponse> addFavorite(SteamGameFavoriteRequest favorite, UserDetails userDetails) {
-    SteamGameFavorite steamGameReview = convertToSteamGameFavorite(favorite, userDetails.getUsername());
-    return steamGameFavoriteRepository.save(steamGameReview);
-
-    
-    
+    SteamGameFavorite steamGameFavorite = convertToSteamGameFavorite(favorite, userDetails.getUsername());
+    Optional <SteamGameFavoriteResponse> savedFavorite = steamGameFavoriteRepository.save(steamGameFavorite);
+    if (savedFavorite.isEmpty()) {
+        throw new SteamGameFavoriteDuplicateException("Steam game favorite with identifier " + favorite.getGameSteamId() + " and user " + userDetails.getUsername() + " already exists");
+    }
+    return savedFavorite;
 }
 
 public Optional<List<SteamGameFavoriteResponse>> getFavoritesByUserName(String username) {

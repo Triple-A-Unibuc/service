@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class SteamGameFavoriteResponse {
+    private String userName;
     private int gameSteamId;
     private String gameName;
     

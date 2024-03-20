@@ -6,10 +6,24 @@
     "configurations": [
         {
             "type": "java",
+            "name": "TripleaApplication",
+            "request": "launch",
+            "mainClass": "ro.unibuc.triplea.TripleaApplication",
+            "projectName": "triplea"
+        },
+        {
+            "type": "java",
             "name": "Service",
             "request": "launch",
             "mainClass": "ro.unibuc.hello.HelloApplication",
             "projectName": "hello"
+        }
+        {
+            "type": "java",
+            "name": "Docker Debug",
+            "request": "attach",
+            "hostName": "localhost",
+            "port": "5005"
         }
     ]
 }

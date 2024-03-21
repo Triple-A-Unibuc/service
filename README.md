@@ -55,9 +55,9 @@ NOTE: for a live demo, please check out [this youtube video](https://youtu.be/-9
 * Verify that all containers started, by running
   ```
   service git:(master) ✗  $ docker ps
-  CONTAINER ID   IMAGE             COMMAND                  CREATED          STATUS          PORTS                                                                                  NAMES
-  f9197b2b32d9   postgres:latest   "docker-entrypoint.s…"   17 seconds ago   Up 15 seconds   0.0.0.0:5432->5432/tcp, :::5432->5432/tcp                                              service-postgres_db-1
-  c5b2c19dbb23   hello-img         "java -jar /hello/li…"   17 seconds ago   Up 15 seconds   0.0.0.0:5005->5005/tcp, :::5005->5005/tcp, 0.0.0.0:8080->8080/tcp, :::8080->8080/tcp   service-hello-1
+  CONTAINER ID   IMAGE             COMMAND                  CREATED         STATUS         PORTS                                                                                  NAMES
+  b8447103d82e   postgres:latest   "docker-entrypoint.s…"   7 seconds ago   Up 4 seconds   0.0.0.0:5432->5432/tcp, :::5432->5432/tcp                                              service-postgres_db-1
+  4282da3d33a2   triplea-img       "java -jar /triplea/…"   7 seconds ago   Up 4 seconds   0.0.0.0:5005->5005/tcp, :::5005->5005/tcp, 0.0.0.0:8080->8080/tcp, :::8080->8080/tcp   service-triplea-1
   ```
 * Open in your browser:
     * [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)

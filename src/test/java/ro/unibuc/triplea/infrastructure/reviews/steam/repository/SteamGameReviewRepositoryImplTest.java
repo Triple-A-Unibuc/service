@@ -8,11 +8,8 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
-// FILEPATH: /workspaces/service/src/test/java/ro/unibuc/triplea/infrastructure/reviews/steam/repository/SteamGameReviewRepositoryImplTest.java
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

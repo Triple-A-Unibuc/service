@@ -60,9 +60,11 @@ public class SteamGameReviewService {
     }
 
     private SteamGameReview convertToSteamGameReview(SteamGameReviewRequest steamGameReviewRequest, String username) {
-        Optional<SteamGameResponse> steamGameResponse = steamGameService.getGameBySteamId(steamGameReviewRequest.getGameSteamId());
+        Optional<SteamGameResponse> steamGameResponse = steamGameService
+                .getGameBySteamId(steamGameReviewRequest.getGameSteamId());
         if (steamGameResponse.isEmpty()) {
-            throw new SteamGameNotFoundException("Steam game with identifier " + steamGameReviewRequest.getGameSteamId() + " not found");
+            throw new SteamGameNotFoundException(
+                    "Steam game with identifier " + steamGameReviewRequest.getGameSteamId() + " not found");
         }
 
         return SteamGameReview.builder()

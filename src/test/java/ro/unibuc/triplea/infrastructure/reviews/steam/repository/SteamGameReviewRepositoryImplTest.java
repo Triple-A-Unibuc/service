@@ -6,16 +6,13 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import ro.unibuc.triplea.application.reviews.steam.dto.response.SteamGameReviewResponse;
 import ro.unibuc.triplea.domain.auth.model.entity.meta.User;
@@ -26,22 +23,13 @@ import ro.unibuc.triplea.infrastructure.auth.repository.SpringDataUserRepository
 
 public class SteamGameReviewRepositoryImplTest {
 
-    @Mock
-    private SpringDataSteamGameReviewRepository springDataSteamGameReviewRepository;
+    private final SpringDataSteamGameReviewRepository springDataSteamGameReviewRepository = mock(SpringDataSteamGameReviewRepository.class);
 
-    @Mock
-    private SpringDataUserRepository springDataUserRepository;
+    private final SpringDataUserRepository springDataUserRepository = mock(SpringDataUserRepository.class);
 
-    @Mock
-    private SteamGameGateway steamGameGateway;
+    private final SteamGameGateway steamGameGateway = mock(SteamGameGateway.class);
 
-    @InjectMocks
-    private SteamGameReviewRepositoryImpl steamGameReviewRepositoryImpl;
-
-    @BeforeEach
-    public void setup() {
-        MockitoAnnotations.openMocks(this);
-    }
+    private SteamGameReviewRepositoryImpl steamGameReviewRepositoryImpl = new SteamGameReviewRepositoryImpl(springDataSteamGameReviewRepository, springDataUserRepository, steamGameGateway);
 
     @Test
     public void testFindAllByGameSteamId() {

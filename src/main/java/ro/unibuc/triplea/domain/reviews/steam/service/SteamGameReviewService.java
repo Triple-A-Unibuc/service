@@ -30,24 +30,17 @@ public class SteamGameReviewService {
     }
 
     public Optional<List<SteamGameReviewResponse>> getReviewsByGameIdentifier(String identifier) {
+        Optional<List<SteamGameReviewResponse>> steamGameReviewResponses;
         if (IdentifierUtil.isNumeric(identifier)) {
             int steamId = Integer.parseInt(identifier);
-            Optional<List<SteamGameReviewResponse>> steamGameReviewResponses = getReviewsBySteamId(steamId);
-
-            if (steamGameReviewResponses.isPresent()) {
-                return steamGameReviewResponses;
-            } else {
-                throw new SteamGameNotFoundException("Steam game with identifier " + identifier + " not found");
-            }
+            steamGameReviewResponses = getReviewsBySteamId(steamId);
         } else {
-            Optional<List<SteamGameReviewResponse>> steamGameReviewResponses = getReviewsByGameName(identifier);
-
-            if (steamGameReviewResponses.isPresent()) {
-                return steamGameReviewResponses;
-            } else {
-                throw new SteamGameNotFoundException("Steam game with identifier " + identifier + " not found");
-            }
+            steamGameReviewResponses = getReviewsByGameName(identifier);
         }
+        if (steamGameReviewResponses.isEmpty()) {
+            throw new SteamGameNotFoundException("Steam game with identifier " + identifier + " not found");
+        }
+        return steamGameReviewResponses;
     }
 
     public Optional<SteamGameReviewResponse> addReview(SteamGameReviewRequest game, UserDetails userDetails) {

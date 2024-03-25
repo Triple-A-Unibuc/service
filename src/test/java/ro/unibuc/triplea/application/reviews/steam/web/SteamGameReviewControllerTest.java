@@ -1,7 +1,7 @@
 package ro.unibuc.triplea.application.reviews.steam.web;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -15,13 +15,15 @@ import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.mock;
 
 public class SteamGameReviewControllerTest {
+        
+    private final SteamGameReviewService steamGameReviewService = mock(SteamGameReviewService.class);
 
-    private final SteamGameReviewService steamGameReviewService = Mockito.mock(SteamGameReviewService.class);
+    private final UserDetails userDetails = mock(UserDetails.class);
 
-    private final SteamGameReviewController steamGameReviewController = new SteamGameReviewController(
-            steamGameReviewService);
+    private final SteamGameReviewController steamGameReviewController = new SteamGameReviewController(steamGameReviewService);
 
     @Test
     public void testGetReviewsBySteamId() {
@@ -95,8 +97,6 @@ public class SteamGameReviewControllerTest {
                 .reviewContent("Great game!")
                 .build();
 
-        UserDetails userDetails = Mockito.mock(UserDetails.class);
-
         SteamGameReviewResponse reviewResponse = SteamGameReviewResponse.builder()
                 .gameSteamId(0)
                 .gameName("Game")
@@ -117,8 +117,6 @@ public class SteamGameReviewControllerTest {
                 .gameSteamId(0)
                 .reviewContent(null) // Set review content as null to simulate a bad request
                 .build();
-
-        UserDetails userDetails = Mockito.mock(UserDetails.class);
 
         ResponseEntity<?> responseEntity = steamGameReviewController.addReview(reviewRequest, userDetails);
 

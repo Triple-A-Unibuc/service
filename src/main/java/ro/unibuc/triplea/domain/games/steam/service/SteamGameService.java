@@ -29,23 +29,16 @@ public class SteamGameService {
     }
 
     public Optional<SteamGameResponse> getGameByIdentifier(String identifier) {
+        Optional<SteamGameResponse> game;
         if (IdentifierUtil.isNumeric(identifier)) {
             int steamId = Integer.parseInt(identifier);
-            Optional<SteamGameResponse> game = getGameBySteamId(steamId);
-
-            if (game.isPresent()) {
-                return game;
-            } else {
-                throw new SteamGameNotFoundException("Steam game with identifier " + identifier + " not found");
-            }
+            game = getGameBySteamId(steamId);
         } else {
-            Optional<SteamGameResponse> game = getGameByName(identifier);
-
-            if (game.isPresent()) {
-                return game;
-            } else {
-                throw new SteamGameNotFoundException("Steam game with identifier " + identifier + " not found");
-            }
+            game = getGameByName(identifier);
         }
+        if (game.isEmpty()) {
+            throw new SteamGameNotFoundException("Steam game with identifier " + identifier + " not found");
+        }
+        return game;
     }
 }

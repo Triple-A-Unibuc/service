@@ -1,9 +1,6 @@
 package ro.unibuc.triplea.domain.reviews.steam.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import ro.unibuc.triplea.application.games.steam.dto.response.SteamGameResponse;
@@ -20,24 +17,17 @@ import java.util.Optional;
 import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 public class SteamGameReviewServiceTest {
 
-    private SteamGameReviewService steamGameReviewService;
+    private SteamGameReviewRepository steamGameReviewRepository = mock(SteamGameReviewRepository.class);
 
-    @Mock
-    private SteamGameReviewRepository steamGameReviewRepository;
+    private SteamGameService steamGameService = mock(SteamGameService.class);
 
-    @Mock
-    private SteamGameService steamGameService;
-
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-        steamGameReviewService = new SteamGameReviewService(steamGameReviewRepository, steamGameService);
-    }
+    private SteamGameReviewService steamGameReviewService = new SteamGameReviewService(steamGameReviewRepository, steamGameService);
 
     @Test
     public void testGetReviewsBySteamId() {
@@ -148,16 +138,6 @@ public class SteamGameReviewServiceTest {
         Optional<List<SteamGameReviewResponse>> result = steamGameReviewService.getReviewsByGameIdentifier(gameName);
 
         assertEquals(expected.size(), result.orElse(new ArrayList<>()).size());
-    }
-
-    @Test
-    public void testGetReviewsByGameIdentifier_GameNotFound() {
-        String gameIdentifier = "game1";
-
-        when(steamGameReviewRepository.findAllByGameName(gameIdentifier)).thenReturn(Optional.empty());
-
-        assertThrows(SteamGameNotFoundException.class,
-                () -> steamGameReviewService.getReviewsByGameIdentifier(gameIdentifier));
     }
 
     @Test

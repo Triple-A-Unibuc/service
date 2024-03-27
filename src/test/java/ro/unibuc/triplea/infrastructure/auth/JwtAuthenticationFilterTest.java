@@ -17,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import ro.unibuc.triplea.domain.auth.model.entity.meta.Token;
 import ro.unibuc.triplea.domain.auth.model.enums.TokenType;
 import ro.unibuc.triplea.domain.auth.repository.TokenRepository;
+import ro.unibuc.triplea.infrastructure.auth.fixtures.TokenFixtures;
 import ro.unibuc.triplea.infrastructure.auth.fixtures.UserFixtures;
 
 import java.io.IOException;
@@ -78,7 +79,7 @@ class JwtAuthenticationFilterTest {
 
         when(jwtService.extractUsername(validToken)).thenReturn("user@example.com");
         when(jwtService.isTokenValid(eq(validToken), any(UserDetails.class))).thenReturn(true);
-        when(tokenRepository.findByToken(validToken)).thenReturn(Optional.of(new Token(1, validToken, TokenType.BEARER, false, false, UserFixtures.user("user@example.com"))));
+        when(tokenRepository.findByToken(validToken)).thenReturn(Optional.of(TokenFixtures.validTokenUsername(validToken, "user@example.com")));
 
         UserDetails userDetails = new User("user@example.com", "password", new ArrayList<>());
         when(userDetailsService.loadUserByUsername("user@example.com")).thenReturn(userDetails);

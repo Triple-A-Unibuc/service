@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.client.RestTemplate;
 import ro.unibuc.triplea.domain.auth.repository.UserRepository;
+import ro.unibuc.triplea.infrastructure.auth.fixtures.UserFixtures;
 
 import java.util.Optional;
 

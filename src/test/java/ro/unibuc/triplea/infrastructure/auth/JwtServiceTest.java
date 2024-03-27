@@ -21,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.security.core.userdetails.User.*;
 
 @ExtendWith(MockitoExtension.class)
-@ExtendWith(SpringExtension.class)
 class JwtServiceTest {
 
     private final JwtService jwtService = new JwtService();

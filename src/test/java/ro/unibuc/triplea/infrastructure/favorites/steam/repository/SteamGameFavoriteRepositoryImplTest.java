@@ -1,10 +1,6 @@
 package ro.unibuc.triplea.infrastructure.favorites.steam.repository;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.context.SpringBootTest;
 import ro.unibuc.triplea.application.favorites.steam.dto.response.SteamGameFavoriteResponse;
 import ro.unibuc.triplea.domain.auth.model.entity.meta.User;
 import ro.unibuc.triplea.domain.favorites.steam.model.entity.SteamGameFavorite;
@@ -17,23 +13,15 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.mock;
 
-@SpringBootTest
 public class SteamGameFavoriteRepositoryImplTest {
 
-    @Mock
-    private SpringDataSteamGameFavoriteRepository mockSteamGameFavoriteRepository;
+    private SpringDataSteamGameFavoriteRepository mockSteamGameFavoriteRepository = mock(SpringDataSteamGameFavoriteRepository.class);
 
-    @Mock
-    private SpringDataUserRepository mockUserRepository;
+    private SpringDataUserRepository mockUserRepository = mock(SpringDataUserRepository.class);
 
-    private SteamGameFavoriteRepositoryImpl steamGameFavoriteRepository;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-        steamGameFavoriteRepository = new SteamGameFavoriteRepositoryImpl(mockSteamGameFavoriteRepository, mockUserRepository);
-    }
+    private SteamGameFavoriteRepositoryImpl steamGameFavoriteRepository = new SteamGameFavoriteRepositoryImpl(mockSteamGameFavoriteRepository, mockUserRepository);
 
     @Test
     void testFindAllByUserName() {

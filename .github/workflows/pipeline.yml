@@ -18,7 +18,7 @@ jobs:
         run: |
           docker-compose up -d
 
-      - name: Test Application with Maven
+      - name: Test Application with Gradle
         run: |
           gradle test
 

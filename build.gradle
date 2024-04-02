@@ -87,6 +87,7 @@ tasks.named('jacocoTestReport') {
 }
 
 tasks.register('testIT', Test) {
+    testLogging.showStandardStreams = true
     outputs.dir snippetsDir
     outputs.upToDateWhen { false }
 

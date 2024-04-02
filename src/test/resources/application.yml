@@ -4,7 +4,7 @@ spring:
     driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: create-drop
   logging:
     level:
       org:

@@ -27,5 +27,5 @@ jobs:
           CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
         run: |
           gradle :jacocoTestReport 
-          cd build && cd reports && cd jacoco && && cd test
+          cd build && cd reports && cd jacoco && cd test
           bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r jacocoTestReport.xml

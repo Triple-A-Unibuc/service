@@ -1,4 +1,7 @@
 # Triple A
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/539b14ed406a4f82b4376433e337a6f7)](https://app.codacy.com/gh/Triple-A-Unibuc/service?utm_source=github.com&utm_medium=referral&utm_content=Triple-A-Unibuc/service&utm_campaign=Badge_Grade)
+
 This project represents a video game forum, for staying up to date with the video game community. Using data from the Steam API, you can:
 - Get a list of games, up to a specified limit
 - Leave a review for one of these games

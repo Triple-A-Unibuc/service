@@ -4,31 +4,47 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.web.context.WebApplicationContext;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 
-import jakarta.persistence.EntityNotFoundException;
-import ro.unibuc.triplea.application.reviews.steam.dto.response.SteamGameReviewResponse;
-import ro.unibuc.triplea.domain.reviews.steam.service.SteamGameReviewService;
-
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.List;
-import java.util.Optional;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 
 @SpringBootTest
 @Tag("IT")
 class SteamGameReviewControllerIT {
-    
+    @Autowired
+    private WebApplicationContext webApplicationContext;
+
+    private MockMvc mockMvc;
+
+    @BeforeEach
+    public void setUp() {
+        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).apply(springSecurity()).build();
+    }
+
+    @Test
+    void contextLoads() {
+        Assertions.assertNotNull(mockMvc);
+        Assertions.assertNotNull(webApplicationContext);
+    }
+
+    @Test
+    void givenUnauthorizedUser_whenGetReviewsBySteamId_thenForbidden() throws Exception {
+        mockMvc.perform(get("/api/v1/reviews/steam/game-id/123"))
+                .andExpect(status().isForbidden());
+    }
+
+    @WithMockUser(username = "user", roles = "USER")
+    @Test
+    void givenUnauthorizedUser_whenGetReviewsBySteamId_thenOk() throws Exception {
+        mockMvc.perform(get("/api/v1/reviews/steam/game-id/50000"))
+                .andExpect(status().isOk());
+    }
 }

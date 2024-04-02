@@ -20,12 +20,12 @@ jobs:
 
       - name: Test Application with Maven
         run: |
-          mvn test
+          gradle test
 
       - name: Upload Coverage Raport from Jacoco to Codacy
         env:
           CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
         run: |
-          mvn jacoco:report
-          cd target && cd site && cd jacoco
-          bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r jacoco.xml
+          gradle :jacocoTestReport 
+          cd build && cd reports && cd jacoco && && cd test
+          bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r jacocoTestReport.xml

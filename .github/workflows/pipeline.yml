@@ -14,11 +14,9 @@ jobs:
         with:
           java-version: 1.21
 
-      - name: Build Application
-        run: make build
-
-      - name: Start Application
-        run: ./start.sh
+      - name: Start Docker - Database Container & Compile Application
+        run: |
+          docker compose up -d
 
       - name: Test Application with Gradle
         run: |

@@ -14,9 +14,11 @@ jobs:
         with:
           java-version: 1.21
 
-      - name: Start Docker - Database Container & Compile Application
-        run: |
-          docker compose --profile postgres --profile triplea-service up -d
+      - name: Build Application
+        run: make build
+
+      - name: Start Application
+        run: ./start.sh
 
       - name: Test Application with Gradle
         run: |

@@ -83,7 +83,12 @@ tasks.named('test') {
 }
 
 tasks.named('jacocoTestReport') {
-    dependsOn test
+	  dependsOn test
+	  reports {
+		  xml.required = true
+		  html.required = true
+		  csv.required = false
+	}
 }
 
 tasks.register('testIT', Test) {

@@ -5,6 +5,8 @@ import io.gatling.http.Predef;
 import io.gatling.http.protocol.HttpProtocolBuilder;
 import io.gatling.javaapi.core.*;
 import io.gatling.javaapi.http.HttpDsl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ro.unibuc.triplea.application.auth.dto.request.RegisterRequest;
 import ro.unibuc.triplea.domain.auth.model.enums.Gender;
 import ro.unibuc.triplea.domain.auth.model.enums.Role;
@@ -17,6 +19,7 @@ import static ro.unibuc.triplea.application.auth.fixtures.AuthenticationFixtures
 
 public class AuthenticationSimulation extends Simulation {
 
+    private static final Logger logger = LoggerFactory.getLogger(AuthenticationSimulation.class);
     private final HttpProtocolBuilder httpProtocol = Predef.http(GatlingConfiguration.loadForTest())
             .baseUrl("http://localhost:8080");
 
@@ -37,8 +40,9 @@ public class AuthenticationSimulation extends Simulation {
             try {
                 return objectMapper.writeValueAsString(registerRequest);
             } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
+                logger.atError().log("An error has occurred while unmarshall object to json.");
             }
+            return "";
         };
     }
 

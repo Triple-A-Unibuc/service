@@ -23,6 +23,12 @@ public class AuthenticationSimulation extends Simulation {
     private final HttpProtocolBuilder httpProtocol = Predef.http(GatlingConfiguration.loadForTest())
             .baseUrl("http://localhost:8080");
 
+    private final ScenarioBuilder registerScenario = CoreDsl.scenario("Register - Load Testing")
+            .exec(HttpDsl.http("Register")
+                    .post("/api/v1/auth/register")
+                    .header("Content-Type", "application/json")
+                    .body(CoreDsl.StringBody(Templates.template)));
+
     static final class Templates {
         public static final Function<Session, String> template = session -> {
             ObjectMapper objectMapper = new ObjectMapper();
@@ -46,14 +52,8 @@ public class AuthenticationSimulation extends Simulation {
         };
     }
 
-    private final ScenarioBuilder scenario = CoreDsl.scenario("Register - Load Testing")
-            .exec(HttpDsl.http("Register")
-                    .post("/api/v1/auth/register")
-                    .header("Content-Type", "application/json")
-                    .body(CoreDsl.StringBody(Templates.template)));
-
     {
-        setUp(scenario.injectOpen(
+        setUp(registerScenario.injectOpen(
                         OpenInjectionStep.atOnceUsers(50),
                         CoreDsl.rampUsers(50).during(10),
                         CoreDsl.constantUsersPerSec(40).during(10).randomized()

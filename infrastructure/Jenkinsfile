@@ -41,6 +41,9 @@ pipeline {
 
                     sh "git tag ${env.IMAGE_TAG}"
                     sh "git push https://$GITHUB_TOKEN@github.com/Triple-A-Unibuc/service.git ${env.IMAGE_TAG}"
+
+                    // Deploy
+                    sh "IMAGE_TAG=${env.IMAGE_TAG} docker compose --profile postgres --profile triplea-service up -d"./
                 }
             }
         }

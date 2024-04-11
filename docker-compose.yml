@@ -1,7 +1,6 @@
 services:
   triplea:
-    image: triplea-img
-    build: .
+    image: radutriplea/triplea-img:${IMAGE_TAG}
     ports:
       - 8080:8080
       - 5005:5005
@@ -33,9 +32,12 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /usr/bin/docker:/usr/bin/docker
       - ./Dockerfile:/Dockerfile
+      - /usr/libexec/docker/cli-plugins/docker-compose:/usr/libexec/docker/cli-plugins/docker-compose
     profiles:
       - "triplea-service"
     user: 0:0
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
   mongo:
     image: mongo:5.0.2
     restart: always

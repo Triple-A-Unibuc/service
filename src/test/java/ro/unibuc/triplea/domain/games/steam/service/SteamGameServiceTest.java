@@ -11,6 +11,7 @@ import ro.unibuc.triplea.domain.games.steam.repository.SteamGameRepository;
 import ro.unibuc.triplea.application.games.steam.dto.response.SteamGameResponse;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,6 +53,55 @@ public class SteamGameServiceTest {
 
             assertEquals(expectedGames, resultGames);
             verify(steamGameRepository, times(1)).findGames(Optional.empty());
+        }
+    }
+
+    @Test
+    public void testGetAllGames_NegativeCount() {
+        Optional<Integer> count = Optional.of(-1);
+
+        try (MockedStatic<Timer> timerMock = mockStatic(Timer.class)) {
+            timerMock.when(() -> Timer.start(any(MeterRegistry.class))).thenReturn(sample);
+
+            when(meterRegistry.counter(anyString(), anyString(), anyString())).thenReturn(counter);
+            doNothing().when(counter).increment();
+            
+            assertThrows(IllegalArgumentException.class, () -> steamGameService.getAllGames(count));
+        }
+    }
+
+    @Test
+    public void testGetAllGames_WithCount() {
+        Optional<Integer> count = Optional.of(2);
+        try (MockedStatic<Timer> timerMock = mockStatic(Timer.class)) {
+            timerMock.when(() -> Timer.start(any(MeterRegistry.class))).thenReturn(sample);
+            when(meterRegistry.counter(anyString(), anyString(), anyString())).thenReturn(counter);
+            doNothing().when(counter).increment();
+            
+            List<SteamGameResponse> expectedGames = new ArrayList<>();
+            expectedGames.add(SteamGameResponse.builder().gameSteamId(1).gameName("Game 1").build());
+            expectedGames.add(SteamGameResponse.builder().gameSteamId(2).gameName("Game 2").build());
+            when(steamGameRepository.findGames(any())).thenReturn(expectedGames);
+            
+            List<SteamGameResponse> resultGames = steamGameService.getAllGames(count);
+            assertEquals(expectedGames, resultGames);
+            verify(steamGameRepository, times(1)).findGames(count);
+        }
+    }
+
+    @Test
+    public void testGetAllGames_NoGamesFound() {
+        Optional<Integer> count = Optional.of(10);
+
+        try (MockedStatic<Timer> timerMock = mockStatic(Timer.class)) {
+            timerMock.when(() -> Timer.start(any(MeterRegistry.class))).thenReturn(sample);
+
+            when(meterRegistry.counter(anyString(), anyString(), anyString())).thenReturn(counter);
+            doNothing().when(counter).increment();
+
+            when(steamGameRepository.findGames(any())).thenReturn(Collections.emptyList());
+
+            assertThrows(SteamGameNotFoundException.class, () -> steamGameService.getAllGames(count));
         }
     }
 

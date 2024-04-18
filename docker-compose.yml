@@ -9,6 +9,10 @@ services:
       ENVIRONMENT_NAME: local
     #      MONGODB_CONECTION_URL: mongodb://root:example@mongo:27017/
     restart: always
+    logging:
+      driver: loki
+      options:
+        loki-url: "http://loki:3100/loki/api/v1/push"
     profiles:
       - "triplea-service"
 
@@ -73,14 +77,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /etc/machine-id:/etc/machine-id:ro
       - /var/lib/dbus/machine-id:/var/lib/dbus/machine-id:ro
-    profiles:
-      - "monitoring"
-  mongodb-exporter:
-    build: ./infrastructure/mongodb_exporter/
-    command: ./mongodb_exporter-linux-amd64 -logtostderr -mongodb.uri mongodb://root:example@mongo:27017 -groups.enabled 'asserts,durability,background_flusshing,connections,extra_info,global_lock,index_counters,network,op_counters,op_counters_repl,memory,locks,metrics'
-    restart: always
-    ports:
-      - 9001:9001
     profiles:
       - "monitoring"
   loki:

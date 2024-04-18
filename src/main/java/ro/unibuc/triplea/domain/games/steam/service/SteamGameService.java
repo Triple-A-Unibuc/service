@@ -22,11 +22,12 @@ public class SteamGameService {
     private final MeterRegistry meterRegistry;
 
     public List<SteamGameResponse> getAllGames(Optional<Integer> count) {
-        Timer.Sample sample = Timer.start(meterRegistry);
+        // Timer.Sample sample = Timer.start(meterRegistry);
 
+        meterRegistry.counter("getAllGamesCount", "endpoint", "getAllGames").increment();
         List<SteamGameResponse> games = steamGameRepository.findGames(count);
 
-        sample.stop(meterRegistry.timer("getAllGames.time"));
+        // sample.stop(meterRegistry.timer("getAllGames.time"));
 
         return games;
 

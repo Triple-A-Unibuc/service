@@ -47,3 +47,12 @@ logging:
       sql: INFO
       jwt: INFO
       service-app: INFO
+
+management:
+  endpoint:
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: info,health,prometheus

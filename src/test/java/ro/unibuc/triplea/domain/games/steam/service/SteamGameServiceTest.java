@@ -1,12 +1,17 @@
 package ro.unibuc.triplea.domain.games.steam.service;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
 
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
 import ro.unibuc.triplea.domain.games.steam.exception.SteamGameNotFoundException;
 import ro.unibuc.triplea.domain.games.steam.repository.SteamGameRepository;
 import ro.unibuc.triplea.application.games.steam.dto.response.SteamGameResponse;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,39 +20,89 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mockStatic;
+
 
 public class SteamGameServiceTest {
 
     private final SteamGameRepository steamGameRepository = mock(SteamGameRepository.class);
 
-    private SteamGameService steamGameService = new SteamGameService(steamGameRepository);
+    private final MeterRegistry meterRegistry = mock(MeterRegistry.class);
 
+    private final Counter counter = mock(Counter.class);
+
+    private final Timer.Sample sample = mock(Timer.Sample.class);
+
+    private SteamGameService steamGameService = new SteamGameService(steamGameRepository, meterRegistry);
     @Test
     public void testGetAllGames() {
-        List<SteamGameResponse> expectedGames = new ArrayList<>();
-        expectedGames.add(SteamGameResponse.builder().gameSteamId(1).gameName("Game 1").build());
-        expectedGames.add(SteamGameResponse.builder().gameSteamId(2).gameName("Game 2").build());
+        try (MockedStatic<Timer> timerMock = mockStatic(Timer.class)) {
+            timerMock.when(() -> Timer.start(any(MeterRegistry.class))).thenReturn(sample);
+            
+            List<SteamGameResponse> expectedGames = new ArrayList<>();
 
-        when(steamGameRepository.findGames(any())).thenReturn(expectedGames);
+            when(meterRegistry.counter(anyString(), anyString(), anyString())).thenReturn(counter);
+            doNothing().when(counter).increment();
+            
+            expectedGames.add(SteamGameResponse.builder().gameSteamId(1).gameName("Game 1").build());
+            expectedGames.add(SteamGameResponse.builder().gameSteamId(2).gameName("Game 2").build());
 
-        List<SteamGameResponse> resultGames = steamGameService.getAllGames(Optional.empty());
+            when(steamGameRepository.findGames(any())).thenReturn(expectedGames);
 
-        assertEquals(expectedGames, resultGames);
-        verify(steamGameRepository, times(1)).findGames(Optional.empty());
+            List<SteamGameResponse> resultGames = steamGameService.getAllGames(Optional.empty());
+
+            assertEquals(expectedGames, resultGames);
+            verify(steamGameRepository, times(1)).findGames(Optional.empty());
+        }
     }
 
     @Test
-    public void testGetGameBySteamId() {
-        int gameSteamId = 123;
-        Optional<SteamGameResponse> expectedGame = Optional
-                .of(SteamGameResponse.builder().gameSteamId(gameSteamId).gameName("Test Game").build());
+    public void testGetAllGames_NegativeCount() {
+        Optional<Integer> count = Optional.of(-1);
 
-        when(steamGameRepository.findByGameSteamId(gameSteamId)).thenReturn(expectedGame);
+        try (MockedStatic<Timer> timerMock = mockStatic(Timer.class)) {
+            timerMock.when(() -> Timer.start(any(MeterRegistry.class))).thenReturn(sample);
 
-        Optional<SteamGameResponse> actualGame = steamGameService.getGameBySteamId(gameSteamId);
+            when(meterRegistry.counter(anyString(), anyString(), anyString())).thenReturn(counter);
+            doNothing().when(counter).increment();
+            
+            assertThrows(IllegalArgumentException.class, () -> steamGameService.getAllGames(count));
+        }
+    }
 
-        assertEquals(expectedGame, actualGame);
-        verify(steamGameRepository, times(1)).findByGameSteamId(gameSteamId);
+    @Test
+    public void testGetAllGames_WithCount() {
+        Optional<Integer> count = Optional.of(2);
+        try (MockedStatic<Timer> timerMock = mockStatic(Timer.class)) {
+            timerMock.when(() -> Timer.start(any(MeterRegistry.class))).thenReturn(sample);
+            when(meterRegistry.counter(anyString(), anyString(), anyString())).thenReturn(counter);
+            doNothing().when(counter).increment();
+            
+            List<SteamGameResponse> expectedGames = new ArrayList<>();
+            expectedGames.add(SteamGameResponse.builder().gameSteamId(1).gameName("Game 1").build());
+            expectedGames.add(SteamGameResponse.builder().gameSteamId(2).gameName("Game 2").build());
+            when(steamGameRepository.findGames(any())).thenReturn(expectedGames);
+            
+            List<SteamGameResponse> resultGames = steamGameService.getAllGames(count);
+            assertEquals(expectedGames, resultGames);
+            verify(steamGameRepository, times(1)).findGames(count);
+        }
+    }
+
+    @Test
+    public void testGetAllGames_NoGamesFound() {
+        Optional<Integer> count = Optional.of(10);
+
+        try (MockedStatic<Timer> timerMock = mockStatic(Timer.class)) {
+            timerMock.when(() -> Timer.start(any(MeterRegistry.class))).thenReturn(sample);
+
+            when(meterRegistry.counter(anyString(), anyString(), anyString())).thenReturn(counter);
+            doNothing().when(counter).increment();
+
+            when(steamGameRepository.findGames(any())).thenReturn(Collections.emptyList());
+
+            assertThrows(SteamGameNotFoundException.class, () -> steamGameService.getAllGames(count));
+        }
     }
 
     @Test

@@ -1,5 +1,8 @@
 package ro.unibuc.triplea.domain.games.steam.service;
 
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -10,6 +13,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -18,7 +22,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
 import ro.unibuc.triplea.application.games.steam.dto.response.SteamGameResponse;
 import ro.unibuc.triplea.domain.games.steam.repository.SteamGameRepository;
 
@@ -41,9 +47,6 @@ public class SteamGameServiceTestIT {
 
     @MockBean
     private SteamGameRepository steamGameRepository;
-
-    @MockBean
-    private MeterRegistry meterRegistry;
 
     @BeforeEach
     public void setUp() {
@@ -93,6 +96,7 @@ public class SteamGameServiceTestIT {
     @WithMockUser(username = "user", roles = "USER")
     @Test
     public void givenAuthorizedUser_whenGetAllGames_thenReturnsGames() throws Exception {
+
         List<SteamGameResponse> expectedGames = new ArrayList<>();
         expectedGames.add(SteamGameResponse.builder().gameSteamId(1).gameName("Game 1").build());
         expectedGames.add(SteamGameResponse.builder().gameSteamId(2).gameName("Game 2").build());

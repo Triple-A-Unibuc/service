@@ -22,7 +22,13 @@ public class SteamGameService {
     private final MeterRegistry meterRegistry;
 
     public List<SteamGameResponse> getAllGames(Optional<Integer> count) {
+
         Timer.Sample sample = Timer.start(meterRegistry);
+        
+        if(count.isPresent() && count.get() < 0) {
+            meterRegistry.counter("getAllGames.errors", "endpoint", "getAllGamesNegativeCount").increment();
+            throw new IllegalArgumentException("Count must be a positive number");
+        }
 
         meterRegistry.counter("getAllGamesCount", "endpoint", "getAllGames").increment();
 
@@ -32,11 +38,15 @@ public class SteamGameService {
         else {
             meterRegistry.counter("getAllGamesCount", "endpoint", "getAllGamesWithoutCount").increment();
         }
+        
         List<SteamGameResponse> games = steamGameRepository.findGames(count);
 
-        sample.stop(meterRegistry.timer("getAllGames.time"));
+        if(games.isEmpty()) {
+            meterRegistry.counter("getAllGames.errors", "endpoint", "getAllGamesApiError").increment();
+            throw new SteamGameNotFoundException("No games found");
+        }
 
-        
+        sample.stop(meterRegistry.timer("getAllGames.time"));
 
         return games;
 

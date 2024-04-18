@@ -10,14 +10,26 @@ import ro.unibuc.triplea.domain.games.steam.utils.IdentifierUtil;
 import java.util.List;
 import java.util.Optional;
 
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
+
 @Service
 @RequiredArgsConstructor
 public class SteamGameService {
 
     private final SteamGameRepository steamGameRepository;
 
+    private final MeterRegistry meterRegistry;
+
     public List<SteamGameResponse> getAllGames(Optional<Integer> count) {
-        return steamGameRepository.findGames(count);
+        Timer.Sample sample = Timer.start(meterRegistry);
+
+        List<SteamGameResponse> games = steamGameRepository.findGames(count);
+
+        sample.stop(meterRegistry.timer("getAllGames.time"));
+
+        return games;
+
     }
 
     public Optional<SteamGameResponse> getGameBySteamId(int gameSteamId) {

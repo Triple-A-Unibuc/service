@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import io.micrometer.core.instrument.MeterRegistry;
 import ro.unibuc.triplea.application.games.steam.dto.response.SteamGameResponse;
 import ro.unibuc.triplea.domain.games.steam.repository.SteamGameRepository;
 
@@ -40,6 +41,9 @@ public class SteamGameServiceTestIT {
 
     @MockBean
     private SteamGameRepository steamGameRepository;
+
+    @MockBean
+    private MeterRegistry meterRegistry;
 
     @BeforeEach
     public void setUp() {

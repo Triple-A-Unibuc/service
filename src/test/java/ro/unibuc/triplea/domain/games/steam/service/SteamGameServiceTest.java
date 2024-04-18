@@ -2,6 +2,8 @@ package ro.unibuc.triplea.domain.games.steam.service;
 
 import org.junit.jupiter.api.Test;
 
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
 import ro.unibuc.triplea.domain.games.steam.exception.SteamGameNotFoundException;
 import ro.unibuc.triplea.domain.games.steam.repository.SteamGameRepository;
 import ro.unibuc.triplea.application.games.steam.dto.response.SteamGameResponse;
@@ -20,10 +22,17 @@ public class SteamGameServiceTest {
 
     private final SteamGameRepository steamGameRepository = mock(SteamGameRepository.class);
 
-    private SteamGameService steamGameService = new SteamGameService(steamGameRepository);
+    private final MeterRegistry meterRegistry = mock(MeterRegistry.class);
+
+    private final Timer.Sample sample = mock(Timer.Sample.class);
+
+    private SteamGameService steamGameService = new SteamGameService(steamGameRepository, meterRegistry);
 
     @Test
     public void testGetAllGames() {
+        //TODO fix this test
+        doNothing().when(Timer.start(meterRegistry));
+        doNothing().when(sample).stop(any(Timer.class));
         List<SteamGameResponse> expectedGames = new ArrayList<>();
         expectedGames.add(SteamGameResponse.builder().gameSteamId(1).gameName("Game 1").build());
         expectedGames.add(SteamGameResponse.builder().gameSteamId(2).gameName("Game 2").build());

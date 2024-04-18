@@ -3,6 +3,7 @@ package ro.unibuc.triplea.domain.games.steam.service;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
+import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
 import ro.unibuc.triplea.domain.games.steam.exception.SteamGameNotFoundException;
@@ -27,26 +28,32 @@ public class SteamGameServiceTest {
 
     private final MeterRegistry meterRegistry = mock(MeterRegistry.class);
 
+    private final Counter counter = mock(Counter.class);
+
     private final Timer.Sample sample = mock(Timer.Sample.class);
 
     private SteamGameService steamGameService = new SteamGameService(steamGameRepository, meterRegistry);
-    // @Test
-    // public void testGetAllGames() {
-    //     try (MockedStatic<Timer> timerMock = mockStatic(Timer.class)) {
-    //         timerMock.when(() -> Timer.start(any(MeterRegistry.class))).thenReturn(sample);
+    @Test
+    public void testGetAllGames() {
+        try (MockedStatic<Timer> timerMock = mockStatic(Timer.class)) {
+            timerMock.when(() -> Timer.start(any(MeterRegistry.class))).thenReturn(sample);
             
-    //         List<SteamGameResponse> expectedGames = new ArrayList<>();
-    //         expectedGames.add(SteamGameResponse.builder().gameSteamId(1).gameName("Game 1").build());
-    //         expectedGames.add(SteamGameResponse.builder().gameSteamId(2).gameName("Game 2").build());
+            List<SteamGameResponse> expectedGames = new ArrayList<>();
 
-    //         when(steamGameRepository.findGames(any())).thenReturn(expectedGames);
+            when(meterRegistry.counter(anyString(), anyString(), anyString())).thenReturn(counter);
+            doNothing().when(counter).increment();
+            
+            expectedGames.add(SteamGameResponse.builder().gameSteamId(1).gameName("Game 1").build());
+            expectedGames.add(SteamGameResponse.builder().gameSteamId(2).gameName("Game 2").build());
 
-    //         List<SteamGameResponse> resultGames = steamGameService.getAllGames(Optional.empty());
+            when(steamGameRepository.findGames(any())).thenReturn(expectedGames);
 
-    //         assertEquals(expectedGames, resultGames);
-    //         verify(steamGameRepository, times(1)).findGames(Optional.empty());
-    //     }
-    // }
+            List<SteamGameResponse> resultGames = steamGameService.getAllGames(Optional.empty());
+
+            assertEquals(expectedGames, resultGames);
+            verify(steamGameRepository, times(1)).findGames(Optional.empty());
+        }
+    }
 
     @Test
     public void testGetGameByName() {

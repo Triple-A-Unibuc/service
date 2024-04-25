@@ -15,6 +15,9 @@ import ro.unibuc.triplea.application.auth.dto.request.RegisterRequest;
 import ro.unibuc.triplea.application.auth.dto.response.AuthenticationResponse;
 import ro.unibuc.triplea.application.auth.dto.response.StandardResponse;
 import ro.unibuc.triplea.domain.auth.service.AuthenticationService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import java.io.IOException;
 
@@ -23,21 +26,25 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @Tag(name = "Auth", description = "Auth management APIs")
 public class AuthenticationController {
+    private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
 
     private final AuthenticationService service;
 
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody RegisterRequest request) {
+        logger.info("Received registration request for user: {}", request.getUsername());
         return new ResponseEntity(new StandardResponse("200", "Done", service.register(request)), HttpStatus.OK);
     }
 
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
+        logger.info("Received authentication request for user: {}", request.getUsername());
         return new ResponseEntity(new StandardResponse("200", "Done", service.authenticate(request)), HttpStatus.OK);
     }
 
     @PostMapping("/refresh-token")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        logger.info("Received refresh token request");
         service.refreshToken(request, response);
     }
 

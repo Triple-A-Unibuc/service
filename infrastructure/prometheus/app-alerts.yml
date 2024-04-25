@@ -18,3 +18,30 @@ groups:
         annotations:
           summary: Increased info retrieval rate {{ $labels.value}} {{ $value }}
           description: "A container has disappeared\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+      
+      - alert: WARNING-HighThroughputGetAllGamesNoCount
+        expr: rate(getAllGamesCount_total{endpoint="getAllGamesWithoutCount"}[10s]) > 5
+        for: 10s
+        labels:
+          severity: warning
+        annotations:
+            summary: Increased get all games no count rate {{ $labels.value}} {{ $value }}
+            description: "The getAllGamesWithoutCount endpoint is experiencing a high retrieval rate without counting\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+      - alert: WARNING-LowPerformanceGetAllGames
+        expr: avg_over_time(getAllGames_time_seconds_max[10s]) > 0.2
+        for: 10s
+        labels:
+          severity: warning
+        annotations:
+          summary: Low performance in getAllGames endpoint {{ $labels.value}} {{ $value }}
+          description: "The getAllGames endpoint is experiencing low performance\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+      - alert: CRITICAL-SteamApiError
+        expr: rate(getAllGames.errors{endpoint="getAllGamesApiError"}[10s]) > 0
+        for: 10s
+        labels:
+          severity: critical
+        annotations:
+          summary: Steam API error {{ $labels.value}} {{ $value }}
+          description: "The Steam API is experiencing errors\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"

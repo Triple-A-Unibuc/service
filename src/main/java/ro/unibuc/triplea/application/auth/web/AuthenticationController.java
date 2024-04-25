@@ -32,13 +32,13 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody RegisterRequest request) {
-        logger.info("Received registration request for user: {}", request.getUsername());
+        logger.info("Received registration request for user");
         return new ResponseEntity(new StandardResponse("200", "Done", service.register(request)), HttpStatus.OK);
     }
 
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
-        logger.info("Received authentication request for user: {}", request.getUsername());
+        logger.info("Received authentication request");
         return new ResponseEntity(new StandardResponse("200", "Done", service.authenticate(request)), HttpStatus.OK);
     }
 

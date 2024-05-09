@@ -21,8 +21,8 @@ groups:
       
         # Quality metric - error rate
       - alert: WARNING-HighErrorRate
-        expr: rate(getAllGamesErrors_total{endpoint="getAllGamesNegativeCount"}[10s]) > 0
-        for: 1s
+        expr: rate(getAllGamesErrors_total{endpoint="getAllGamesNegativeCount"}[10s]) > 0.01
+        for: 10s
         labels:
           severity: warning
         annotations:

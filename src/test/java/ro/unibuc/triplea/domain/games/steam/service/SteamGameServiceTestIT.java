@@ -89,6 +89,7 @@ public class SteamGameServiceTestIT {
     @WithMockUser(username = "user", roles = "USER")
     @Test
     public void givenAuthorizedUser_whenGetAllGames_thenReturnsGames() throws Exception {
+
         List<SteamGameResponse> expectedGames = new ArrayList<>();
         expectedGames.add(SteamGameResponse.builder().gameSteamId(1).gameName("Game 1").build());
         expectedGames.add(SteamGameResponse.builder().gameSteamId(2).gameName("Game 2").build());
